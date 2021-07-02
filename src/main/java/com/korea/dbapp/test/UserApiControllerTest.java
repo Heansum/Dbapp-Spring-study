@@ -40,8 +40,8 @@ public class UserApiControllerTest {
 	// http://localhost:8000/user/2
 	@GetMapping("/test/user/{id}")
 	public User findById(@PathVariable int id) {
-		userRepository.findById(id).get();
-		return null;
+		
+		return userRepository.findById(id).get();
 	}
 	
 	@GetMapping("/test/user/username/{username}")
