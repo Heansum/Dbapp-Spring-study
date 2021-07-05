@@ -39,9 +39,11 @@ public class UserApiControllerTest {
 	
 	// http://localhost:8000/user/2
 	@GetMapping("/test/user/{id}")
-	public User findById(@PathVariable int id) {
+	public String findById(@PathVariable int id) {
+		User userEntity =  userRepository.findById(id).get();
+		System.out.println(userEntity.toString());
 		
-		return userRepository.findById(id).get();
+		return "ok";
 	}
 	
 	@GetMapping("/test/user/username/{username}")

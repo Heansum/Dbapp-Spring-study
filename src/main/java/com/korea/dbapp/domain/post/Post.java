@@ -1,6 +1,7 @@
 package com.korea.dbapp.domain.post;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -23,8 +24,15 @@ public class Post {
 	
 	// ORM 으로 포린키를 만들어보자
 	@JoinColumn(name = "user_id")
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.LAZY)
 	private User user; // ORM 사용
+
+	
+	
+	@Override
+	public String toString() {
+		return "Post [id=" + id + ", title=" + title + ", content=" + content + ", user=" + user + "]";
+	}
 
 	public int getId() {
 		return id;

@@ -12,3 +12,6 @@ spring:  mvc:    view:      prefix: /WEB-INF/views/
     
   jpa:    hibernate:      ddl-auto: none # create, update, none
     show-sql: true
+    open-in-view: false
+    
+    
