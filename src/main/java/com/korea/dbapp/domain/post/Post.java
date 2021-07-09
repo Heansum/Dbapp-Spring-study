@@ -24,7 +24,7 @@ public class Post {
 	
 	// ORM 으로 포린키를 만들어보자
 	@JoinColumn(name = "user_id")
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.EAGER)
 	private User user; // ORM 사용
 
 	

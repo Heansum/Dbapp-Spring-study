@@ -65,9 +65,70 @@ public class PostController {
 	} // end of deleteById
 	
 	@GetMapping("/post/saveForm")
-	public String saveForm() {
+	public String saveForm(Model model) {
 		// 1. 인증 체크 - 숙제
 		
-		return "post/saveForm";
+		return "post/saveForm"; // 파일을 호출
 	}
+	
+	@PostMapping("/post")
+	public String save(Post post) {
+		User principal = (User) session.getAttribute("principal");
+		if(principal == null) {
+			return "redirect:/auth/loginForm"; // 주소를 호출
+		}
+		
+			post.setUser(principal);
+			postRepository.save(post);
+			return "redirect:/";
+	}
+	
+	@GetMapping("/post/{id}/updateForm")
+	public String updateForm(@PathVariable int id, Model model) {
+		
+		User principal = (User) session.getAttribute("principal");
+		int loginId = principal.getId();
+		
+		Post postEntity = postRepository.findById(id).get();
+		int postOwnerId = postEntity.getUser().getId();
+		
+		if(loginId == postOwnerId) {
+			model.addAttribute("postEntity", postEntity);
+			return "post/updateForm";	
+		} else {
+			return "redirect:/auth/loginForm";
+		}
+	}
+	
+	@PostMapping("/post/{id}/update")
+	public String updateSave(@PathVariable int id, Post post) {
+		
+		User principal = (User) session.getAttribute("principal");
+		int loginId = principal.getId();
+		
+		Post postEntity = postRepository.findById(id).get();
+		int postOwnerId = postEntity.getUser().getId();
+		
+		if(loginId==postOwnerId) {
+			postEntity.setTitle(post.getTitle());
+			postEntity.setContent(post.getContent());
+			postRepository.save(postEntity);
+			return "redirect:/post/"+id;
+		} else {
+			return "redirect:/auth/loginForm";
+		}
+		
+	}
+	
+//	@PostMapping("/post")
+//	public String save(Post post) {
+//		User principal = (User) session.getAttribute("principal");
+//		if(principal == null) {
+//			return "redirect:/auth/loginForm"; // 주소를 호출
+//		}
+//		
+//			post.setUser(principal);
+//			postRepository.save(post);
+//			return "redirect:/";
+//	}
 }
