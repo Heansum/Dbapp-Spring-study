@@ -7,7 +7,7 @@
 		<a href="/post/${postEntity.id}/updateForm" class="btn btn-warning">수정</a>
 		
 		
-		<form action="/post/${postEntity.id}" method="post" style="display: inline-block">
+		<form style="display: inline-block" onsubmit="deletePost()">
 			<button id="btn-delete" class="btn btn-danger" type="submit">삭제</button>
 		</form>
 		
@@ -56,5 +56,26 @@
 	</div>
 	<br />
 </div>
+
+<script>
+	async function deletePost(){
+		event.preventDefault();
+		
+		let response = await fetch("/post/${postEntity.id}", {
+			method: "delete"
+		});
+		
+		let parseResponse = await response.text();
+		
+		if(parseResponse === "ok") {
+			location.href="/";
+		} else {
+			alert("삭제실패");
+		}
+		
+	}
+
+
+</script>
 
 <%@ include file="../layout/footer.jsp"%>

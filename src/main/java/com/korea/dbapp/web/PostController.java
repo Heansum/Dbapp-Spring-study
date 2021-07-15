@@ -4,9 +4,12 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.korea.dbapp.domain.post.Post;
@@ -39,7 +42,7 @@ public class PostController {
 		return "post/detail";
 	}
 	
-	@PostMapping("/post/{id}")
+	@DeleteMapping("/post/{id}")
 	public @ResponseBody String deleteById(@PathVariable int id) {
 		// 1. 권한체크( post id를 통해 user id를 찾아서 session의 id를 비교) 
 		// 2. {id} 값으로 삭제
@@ -57,9 +60,9 @@ public class PostController {
 		// 2. {id} 값으로 삭제!!
 		if(userId==postUserId) {
 			postRepository.deleteById(id);
-			return Script.href("/");
+			return "ok";
 		} else {
-			return Script.back("삭제 실패");
+			return "fail";
 		}
 		
 	} // end of deleteById
@@ -100,9 +103,29 @@ public class PostController {
 		}
 	}
 	
-	@PostMapping("/post/{id}/update")
-	public String updateSave(@PathVariable int id, Post post) {
-		
+	// 구 Post로 구현한 update
+//	@PostMapping("/post/{id}/updateForm")
+//	public String updateSave(@PathVariable int id, Post post) {
+//		
+//		User principal = (User) session.getAttribute("principal");
+//		int loginId = principal.getId();
+//		
+//		Post postEntity = postRepository.findById(id).get();
+//		int postOwnerId = postEntity.getUser().getId();
+//		
+//		if(loginId==postOwnerId) {
+//			postEntity.setTitle(post.getTitle());
+//			postEntity.setContent(post.getContent());
+//			postRepository.save(postEntity);
+//			return "redirect:/post/"+id;
+//		} else {
+//			return "redirect:/auth/loginForm";
+//		}
+//		
+//	}
+	
+	@PutMapping("/post/{id}")
+	public @ResponseBody String update(@PathVariable int id, @RequestBody Post post) {
 		User principal = (User) session.getAttribute("principal");
 		int loginId = principal.getId();
 		
@@ -113,11 +136,10 @@ public class PostController {
 			postEntity.setTitle(post.getTitle());
 			postEntity.setContent(post.getContent());
 			postRepository.save(postEntity);
-			return "redirect:/post/"+id;
-		} else {
-			return "redirect:/auth/loginForm";
+			return "ok";
 		}
 		
+		return "nope";
 	}
 	
 //	@PostMapping("/post")
